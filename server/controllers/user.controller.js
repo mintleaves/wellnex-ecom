@@ -1,4 +1,7 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 import { UserModel } from "../models/user.model.js";
 
 const userRegister = async (req, res) => {
@@ -42,10 +45,34 @@ const userLogin = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match)
       return res.status(400).json({ message: "Invalid credentials!" });
-    return res.status(200).json({ message: "You are successfully logged in!" });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.EXPIRES_IN },
+    );
+    return res
+      .status(200)
+      .json({ accesstoken: token, message: "You are successfully logged in!" });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
     console.error(error);
+  }
+};
+export const me = async (req, res) => {
+  try {
+    const user = await UserModel.findOne({
+      where: { id: req.id },
+      attributes: ["username"],
+    });
+    console.log(user);
+    return res.status(200).json(user);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cm: error.message });
   }
 };
 export { userRegister, userLogin };

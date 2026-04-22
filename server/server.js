@@ -11,6 +11,25 @@ const app = express();
 app.use(express.json());
 app.use("/api", userRouter);
 
+// error handleling
+// 404
+app.use((req, res, next) => {
+  const error = new Error("url not found");
+  error.status = 404;
+  // const a = 404
+  next(error);
+});
+// global centralize error handling
+app.use((err, req, res, next) => {
+  const errStatusCode = err.status || 500;
+  res.status(errStatusCode).json({
+    success: false,
+    message:
+      process.env.NODE_ENV === "development"
+        ? `central error: ${err.message} `
+        : "contact developer",
+  });
+});
 // DB connection
 const dBConnection = async () => {
   try {
