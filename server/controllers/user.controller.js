@@ -4,21 +4,25 @@ import dotenv from "dotenv";
 dotenv.config();
 import { UserModel } from "../models/user.model.js";
 
-const userRegister = async (req, res) => {
+const userRegister = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      const err = new Error("All fields are required! Nira");
+      err.statusCode = 400;
+      return next(err); // sending to global parameter
     }
     const existingUser = await UserModel.findOne({ where: { email: email } });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      const err = new Error("User already exists");
+      err.statusCode = 400;
+      return next(err);
     }
-    const normaliedEmail = email.toLowerCase();
+    const normalizedEmail = email.toLowerCase();
     const hashed = await bcrypt.hash(password, 10);
     const userData = await UserModel.create({
       username,
-      email: normaliedEmail,
+      email: normalizedEmail,
       password: hashed,
     });
     return res.status(201).json({
@@ -30,35 +34,43 @@ const userRegister = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
-    console.error(error);
+    next(error);
   }
 };
 
-const userLogin = async (req, res) => {
+const userLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "All fields are required" });
-    const user = await UserModel.findOne({ where: { email: email } });
-    if (!user) return res.status(400).json({ message: "Invalid credentials!" });
+    if (!email || !password) {
+      const err = new Error("All fields are required");
+      err.statusCode = 400;
+      return next(err);
+    }
+    const normalizedEmail = email.toLowerCase();
+    const user = await UserModel.findOne({ where: { email: normalizedEmail } });
+    if (!user) {
+      const err = new Error("Invalid credentials");
+      err.statusCode = 401;
+      return next(err);
+    }
     const match = await bcrypt.compare(password, user.password);
-    if (!match)
-      return res.status(400).json({ message: "Invalid credentials!" });
+    if (!match) {
+      const err = new Error("Invalid credentials");
+      err.statusCode = 401;
+      return next(err);
+    }
     const token = jwt.sign(
       {
         id: user.id,
-        email: user.email,
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.EXPIRES_IN },
     );
     return res
       .status(200)
-      .json({ accesstoken: token, message: "You are successfully logged in!" });
+      .json({ accessToken: token, message: "You are successfully logged in!" });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
-    console.error(error);
+    next(error);
   }
 };
 export const me = async (req, res) => {
