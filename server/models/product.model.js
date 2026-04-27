@@ -1,23 +1,26 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConfig.js";
 
-export const UserModel = sequelize.define("user", {
+export const ProductModel = sequelize.define("product", {
   id: {
     type: DataTypes.INTEGER,
-    autoIncrement: true,
     primaryKey: true,
+    autoIncrement: true,
   },
-  username: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  email: {
-    type: DataTypes.STRING,
+  price: {
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
-    unique: true,
   },
-  password: {
+  image: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   },
 });

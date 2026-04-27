@@ -11,5 +11,7 @@
 ### Day4: Auth cleanup (Error handling)
 
 - Global Error middleware
-- AppError
--
+- AppError (Later)
+- AsyncHandler (Later)
+
+### Day5: Products System (part-1)

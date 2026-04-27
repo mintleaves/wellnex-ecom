@@ -8,9 +8,9 @@ const userRegister = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
-      const err = new Error("All fields are required! Nira");
+      const err = new Error("All fields are required!");
       err.statusCode = 400;
-      return next(err); // sending to global parameter
+      return next(err);
     }
     const existingUser = await UserModel.findOne({ where: { email: email } });
     if (existingUser) {
@@ -26,6 +26,7 @@ const userRegister = async (req, res, next) => {
       password: hashed,
     });
     return res.status(201).json({
+      success: true,
       message: "A new user created successfully",
       userData: {
         id: userData.id,
@@ -68,7 +69,11 @@ const userLogin = async (req, res, next) => {
     );
     return res
       .status(200)
-      .json({ accessToken: token, message: "You are successfully logged in!" });
+      .json({
+        success: true,
+        accessToken: token,
+        message: "You are successfully logged in!",
+      });
   } catch (error) {
     next(error);
   }

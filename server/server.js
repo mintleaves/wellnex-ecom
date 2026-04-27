@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import sequelize from "./config/dbConfig.js";
 import { UserModel } from "./models/user.model.js";
+import { ProductModel } from "./models/product.model.js";
 import userRouter from "./routes/user.route.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
+import productRouter from "./routes/product.route.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 5500;
@@ -13,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use("/api", userRouter);
+app.use("/api", productRouter);
 
 // // error handleling
 // // 404
@@ -21,17 +24,6 @@ app.use("/api", userRouter);
 //   error.status = 404;
 //   // const a = 404
 //   next(error);
-// });
-// // global centralize error handling
-// app.use((err, req, res, next) => {
-//   const errStatusCode = err.status || 500;
-//   res.status(errStatusCode).json({
-//     success: false,
-//     message:
-//       process.env.NODE_ENV === "development"
-//         ? `central error: ${err.message} `
-//         : "contact developer",
-//   });
 // });
 
 // Global error handling middleware
