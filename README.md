@@ -15,3 +15,5 @@
 - AsyncHandler (Later)
 
 ### Day5: Products System (part-1)
+
+### Day6: Full Product CRUD
