@@ -17,3 +17,7 @@
 ### Day5: Products System (part-1)
 
 ### Day6: Full Product CRUD
+
+### Day7: Category System
+
+- Add Global sequelize error handler for unique constraint and validation

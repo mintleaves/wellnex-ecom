@@ -1,10 +1,18 @@
+import { CategoryModel } from "../models/category.model.js";
 import { ProductModel } from "../models/product.model.js";
 const addProduct = async (req, res, next) => {
   try {
-    const { name, price, image, description } = req.body;
+    const { name, price, image, description, catId } = req.body;
+
     if (!name || !price) {
       const err = new Error("Name and price is required");
       err.statusCode = 400;
+      return next(err);
+    }
+    const catIdValid = await CategoryModel.findByPk(catId);
+    if (!catIdValid) {
+      const err = new Error("Category ID not found");
+      err.statusCode = 404;
       return next(err);
     }
     const product = await ProductModel.create({
@@ -12,6 +20,7 @@ const addProduct = async (req, res, next) => {
       price: price,
       image: image,
       description: description,
+      categoryId: catIdValid.id,
     });
     return res.status(201).json({
       success: true,
@@ -73,7 +82,7 @@ const updateProduct = async (req, res, next) => {
       image: image || product.image,
       description: description || product.description,
     });
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Product updated successfully",
       product,
@@ -93,9 +102,9 @@ const deleteProduct = async (req, res, next) => {
       return next(err);
     }
     await product.destroy();
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
-      message: "A product deleted successfuly",
+      message: "A product deleted successfully",
     });
   } catch (error) {
     next(error);
