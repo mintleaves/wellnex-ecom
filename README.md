@@ -21,3 +21,5 @@
 ### Day7: Category System
 
 - Add Global sequelize error handler for unique constraint and validation
+
+### Dat8: Frontend setup

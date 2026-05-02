@@ -2,15 +2,15 @@ import { CategoryModel } from "../models/category.model.js";
 import { ProductModel } from "../models/product.model.js";
 const addProduct = async (req, res, next) => {
   try {
-    const { name, price, image, description, catId } = req.body;
+    const { name, price, image, description, categoryId } = req.body;
 
     if (!name || !price) {
       const err = new Error("Name and price is required");
       err.statusCode = 400;
       return next(err);
     }
-    const catIdValid = await CategoryModel.findByPk(catId);
-    if (!catIdValid) {
+    const categoryIdValid = await CategoryModel.findByPk(categoryId);
+    if (!categoryIdValid) {
       const err = new Error("Category ID not found");
       err.statusCode = 404;
       return next(err);
@@ -20,7 +20,7 @@ const addProduct = async (req, res, next) => {
       price: price,
       image: image,
       description: description,
-      categoryId: catIdValid.id,
+      categoryId: categoryIdValid.id,
     });
     return res.status(201).json({
       success: true,

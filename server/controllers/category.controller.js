@@ -8,8 +8,15 @@ const createCategory = async (req, res, next) => {
       err.statusCode = 400;
       return next(err);
     }
+    const existingName = await CategoryModel.findOne({ where: { name: name } });
+    if (existingName) {
+      const err = new Error("Category already exists");
+      err.statusCode = 400;
+      return next(err);
+    }
+    const normalizedName = name.toLowerCase();
     const category = await CategoryModel.create({
-      name: name,
+      name: normalizedName,
     });
     return res.status(201).json({
       success: true,
@@ -23,13 +30,13 @@ const createCategory = async (req, res, next) => {
 
 const getAllCategory = async (req, res, next) => {
   try {
-    const category = await CategoryModel.findAll({
+    const categories = await CategoryModel.findAll({
       order: [["id", "DESC"]],
     });
     return res.status(200).json({
       success: true,
-      message: "All Categories:",
-      category,
+      message: "Categories fetched successfully",
+      categories,
     });
   } catch (error) {
     next(error);
