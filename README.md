@@ -23,3 +23,5 @@
 - Add Global sequelize error handler for unique constraint and validation
 
 ### Dat8: Frontend setup
+
+### Day9: UI Skeleton
