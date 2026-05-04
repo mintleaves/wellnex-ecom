@@ -1,30 +1,29 @@
-import lipikar from "../assets/lipikar.jpg";
-import polanine from "../assets/polanine.jpg";
-import prorhinel from "../assets/prorhinel.jpg";
+import { useState, useEffect } from "react";
+import { getProducts } from "../services/productService";
 
-const products = [
-  {
-    img: lipikar,
-    name: "Lipikar surgras soap bar - LA ROCHE POSAY",
-    price: "€7.20",
-    rating: 5,
-    reviews: 2,
-  },
-  {
-    img: polanine,
-    name: "Polanine cream - GENTLE CARE",
-    price: "€12.50",
-    rating: 4,
-    reviews: 7,
-  },
-  {
-    img: prorhinel,
-    name: "Prorhinel nasal spray - DAILY USE",
-    price: "€9.90",
-    rating: 5,
-    reviews: 3,
-  },
-];
+// const productsss = [
+//   {
+//     img: lipikar,
+//     name: "Lipikar surgras soap bar - LA ROCHE",
+//     price: "€7.20",
+//     rating: 5,
+//     reviews: 2,
+//   },
+//   {
+//     img: polanine,
+//     name: "Polanine cream - GENTLE CARE",
+//     price: "€12.50",
+//     rating: 4,
+//     reviews: 7,
+//   },
+//   {
+//     img: prorhinel,
+//     name: "Prorhinel nasal spray - DAILY USE",
+//     price: "€9.90",
+//     rating: 5,
+//     reviews: 3,
+//   },
+// ];
 
 const StarRating = ({ rating }) => (
   <div className="flex items-center gap-1">
@@ -40,15 +39,45 @@ const StarRating = ({ rating }) => (
 );
 
 const Product = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    //method 1
+    // fetch(getProducts).then((res) => {
+    //   return res.json().then((data) => {
+    //     return setProducts(data);
+    //   });
+    // });
+    //method 2
+    getProducts()
+      .then((data) => {
+        // console.log(data);
+        setProducts(data.products);
+      })
+      .catch((err) => {
+        setError(err.message || "Something went wrong");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    //method 3
+    // fetchProducts();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: error</div>;
+
   return (
     <>
       <h1 className="text-3xl md:text-5xl font-semibold text-gray-800 leading-tight text-center mt-20">
         Our Products
       </h1>
       <div className="flex flex-wrap gap-6 justify-center p-8">
-        {products.map((product, index) => (
+        {products.map((product) => (
           <div
-            key={index}
+            key={product.id}
             className="w-56 border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-white"
           >
             {/* Image */}
@@ -78,6 +107,14 @@ const Product = () => {
           </div>
         ))}
       </div>
+      {/* <div>
+        <h1>Products fetched from mint backend:-</h1>
+        {products &&
+          products.map((product) => {
+            return <p key={product.id}>{product.name}</p>;
+            // <p>{product.price}</p>
+          })}
+      </div> */}
     </>
   );
 };

@@ -24,4 +24,6 @@
 
 ### Dat8: Frontend setup
 
-### Day9: UI Skeleton
+### Day9: UI structure for nav, product and home page
+
+### Day10: Fetch product from backend
