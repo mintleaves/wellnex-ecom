@@ -28,7 +28,7 @@ const createCategory = async (req, res, next) => {
   }
 };
 
-const getAllCategory = async (req, res, next) => {
+const getCategories = async (req, res, next) => {
   try {
     const categories = await CategoryModel.findAll({
       order: [["id", "DESC"]],
@@ -42,4 +42,4 @@ const getAllCategory = async (req, res, next) => {
     next(error);
   }
 };
-export { createCategory, getAllCategory };
+export { createCategory, getCategories };

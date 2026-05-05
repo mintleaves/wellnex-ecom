@@ -18,8 +18,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use("/api", userRouter);
-app.use("/api", productRouter);
-app.use("/api", categoryRouter);
+app.use("/api/products", productRouter);
+app.use("/api/categories", categoryRouter);
 
 // // error handleling
 // // 404

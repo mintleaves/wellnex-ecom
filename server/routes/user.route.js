@@ -7,7 +7,7 @@ import { authGuard } from "../middlewares/authGuard.middleware.js";
 userRouter.post("/register", userRegister);
 userRouter.post("/login", userLogin);
 userRouter.get("/profile", authGuard, (req, res) => {
-  res.json({ message: "welcome to your profile", id: req.id });
+  res.status(200).json({ message: "welcome to your profile", id: req.id });
 });
 userRouter.get("/me", authGuard, me);
 export default userRouter;

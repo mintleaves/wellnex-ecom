@@ -1,6 +1,6 @@
 import { CategoryModel } from "../models/category.model.js";
 import { ProductModel } from "../models/product.model.js";
-const addProduct = async (req, res, next) => {
+const createProduct = async (req, res, next) => {
   try {
     const { name, price, image, description, categoryId } = req.body;
 
@@ -32,7 +32,7 @@ const addProduct = async (req, res, next) => {
   }
 };
 
-const getAllProducts = async (req, res, next) => {
+const getProducts = async (req, res, next) => {
   try {
     const products = await ProductModel.findAll({
       order: [["id", "DESC"]],
@@ -47,7 +47,7 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
-const getProduct = async (req, res, next) => {
+const getProductById = async (req, res, next) => {
   try {
     const id = req.params.id;
     const product = await ProductModel.findByPk(id);
@@ -111,4 +111,10 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
-export { addProduct, getAllProducts, getProduct, updateProduct, deleteProduct };
+export {
+  createProduct,
+  getProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+};
